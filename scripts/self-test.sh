@@ -8,7 +8,9 @@ PROXY_PID=""
 TARGET_ID=""
 FIXTURE_HTML=""
 SHOT_FILE=""
+JPEG_FILE=""
 NAV_HTML=""
+UPLOAD_FILE=""
 
 cleanup() {
   if [ -n "${TARGET_ID}" ]; then
@@ -24,8 +26,14 @@ cleanup() {
   if [ -n "${SHOT_FILE}" ]; then
     rm -f "${SHOT_FILE}" >/dev/null 2>&1 || true
   fi
+  if [ -n "${JPEG_FILE}" ]; then
+    rm -f "${JPEG_FILE}" >/dev/null 2>&1 || true
+  fi
   if [ -n "${NAV_HTML}" ]; then
     rm -f "${NAV_HTML}" >/dev/null 2>&1 || true
+  fi
+  if [ -n "${UPLOAD_FILE}" ]; then
+    rm -f "${UPLOAD_FILE}" >/dev/null 2>&1 || true
   fi
 }
 trap cleanup EXIT
@@ -62,6 +70,19 @@ assert_png_file() {
   fi
 }
 
+assert_jpeg_file() {
+  local file="$1"
+  local label="$2"
+  local header
+  header="$(LC_ALL=C od -An -t x1 -N 3 "${file}" | tr -d ' \n')"
+  if [[ "${header}" != ff* ]]; then
+    fail "${label} -- expected JPEG header, got ${header}"
+  fi
+  if [ "${header}" != "ffd8ff" ]; then
+    fail "${label} -- expected JPEG header prefix ffd8ff, got ${header}"
+  fi
+}
+
 request() {
   local method="$1"
   local url="$2"
@@ -90,7 +111,10 @@ PROXY_PID=$!
 
 FIXTURE_HTML="$(mktemp /tmp/academic-search-self-test.XXXXXX.html)"
 SHOT_FILE="$(mktemp /tmp/academic-search-self-test-shot.XXXXXX.png)"
+JPEG_FILE="$(mktemp /tmp/academic-search-self-test-shot.XXXXXX.jpg)"
 NAV_HTML="$(mktemp /tmp/academic-search-self-test-nav.XXXXXX.html)"
+UPLOAD_FILE="$(mktemp /tmp/academic-search-self-test-upload.XXXXXX.txt)"
+printf 'academic-search upload fixture\n' > "${UPLOAD_FILE}"
 printf '%s' '<!doctype html>
 <html>
 <head>
@@ -106,6 +130,7 @@ printf '%s' '<!doctype html>
   <div class="toolbar">
     <button id="click-btn" onclick="document.body.dataset.clicked='\''true'\''">click</button>
     <button id="real-btn" onclick="document.body.dataset.realClick='\''true'\''">clickAt</button>
+    <input id="file-input" type="file" onchange="document.body.dataset.fileCount=String(this.files.length); document.body.dataset.fileName=this.files[0]?.name || '\'''\''" />
   </div>
   <div class="spacer"></div>
 </body>
@@ -216,6 +241,20 @@ SCREENSHOT_OK="$(request GET "${BASE_URL}/screenshot?target=${TARGET_ID}&file=${
 assert_contains "${SCREENSHOT_OK}" "\"saved\":\"${SHOT_FILE}\"" "screenshot endpoint"
 assert_file_nonempty "${SHOT_FILE}" "screenshot file"
 assert_png_file "${SHOT_FILE}" "screenshot file format"
+
+JPEG_SCREENSHOT_OK="$(request GET "${BASE_URL}/screenshot?target=${TARGET_ID}&format=jpeg&file=${JPEG_FILE}")"
+assert_contains "${JPEG_SCREENSHOT_OK}" "\"saved\":\"${JPEG_FILE}\"" "jpeg screenshot endpoint"
+assert_file_nonempty "${JPEG_FILE}" "jpeg screenshot file"
+assert_jpeg_file "${JPEG_FILE}" "jpeg screenshot file format"
+
+SETFILES_BODY="$(printf '{"selector":"#file-input","files":["%s"]}' "${UPLOAD_FILE}")"
+SETFILES_OK="$(request POST "${BASE_URL}/setFiles?target=${TARGET_ID}" "${SETFILES_BODY}")"
+assert_contains "${SETFILES_OK}" '"success":true' "setFiles endpoint"
+assert_contains "${SETFILES_OK}" '"files":1' "setFiles response count"
+SETFILES_STATE="$(request POST "${BASE_URL}/eval?target=${TARGET_ID}" '(() => ({count: document.body.dataset.fileCount, name: document.body.dataset.fileName, filesLength: document.querySelector("#file-input").files.length}))()')"
+assert_contains "${SETFILES_STATE}" '"count":"1"' "setFiles onchange count"
+assert_contains "${SETFILES_STATE}" "\"name\":\"$(basename "${UPLOAD_FILE}")\"" "setFiles filename"
+assert_contains "${SETFILES_STATE}" '"filesLength":1' "setFiles DOM files length"
 
 NAV_URL="file://${NAV_HTML}"
 NAVIGATE_OK="$(request GET "${BASE_URL}/navigate?target=${TARGET_ID}&url=${NAV_URL}")"

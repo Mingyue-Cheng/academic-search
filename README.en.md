@@ -39,13 +39,13 @@ Claude Code ships with WebSearch and WebFetch, but lacks academic-specific retri
 **Option 1: Let Claude install it automatically**
 
 ```
-Install this skill for me: https://github.com/Mingyue-Cheng/PaperScout
+Install this skill for me: https://github.com/Mingyue-Cheng/academic-search
 ```
 
 **Option 2: Manual**
 
 ```bash
-git clone https://github.com/Mingyue-Cheng/PaperScout ~/.claude/skills/academic-search
+git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/academic-search
 ```
 
 **Option 3: Local symlink (for development)**
@@ -77,6 +77,21 @@ Local regression test:
 ```bash
 cd academic-search
 make test
+```
+
+Pre-release regression test:
+
+```bash
+cd academic-search
+make test-release
+```
+
+If `3456` or the default test port `4568` is already occupied, override it explicitly:
+
+```bash
+cd academic-search
+make test CDP_PROXY_PORT=4570
+make test-release CDP_PROXY_PORT=4570
 ```
 
 ---
@@ -130,12 +145,12 @@ The Proxy connects to Chrome via WebSocket (compatible with the `chrome://inspec
 bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 
 # Page operations
-curl -s "http://localhost:3456/new?url=https://scholar.google.com"           # Open new tab
-curl -s -X POST "http://localhost:3456/eval?target=ID" -d 'document.title'  # Execute JS
-curl -s -X POST "http://localhost:3456/click?target=ID" -d 'button.submit'  # Click element
-curl -s "http://localhost:3456/screenshot?target=ID&file=/tmp/shot.png"      # Screenshot
-curl -s "http://localhost:3456/scroll?target=ID&direction=bottom"            # Scroll
-curl -s "http://localhost:3456/close?target=ID"                              # Close tab
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/new?url=https://scholar.google.com"           # Open new tab
+curl -s -X POST "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/eval?target=ID" -d 'document.title'  # Execute JS
+curl -s -X POST "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/click?target=ID" -d 'button.submit'  # Click element
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/screenshot?target=ID&file=/tmp/shot.png"      # Screenshot
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/scroll?target=ID&direction=bottom"            # Scroll
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/close?target=ID"                              # Close tab
 ```
 
 See `references/cdp-api.md` for the full API reference.
@@ -146,14 +161,15 @@ See `references/cdp-api.md` for the full API reference.
 
 ```
 academic-search/
-├── Makefile                          # Standard test entry (make test)
+├── Makefile                          # Standard test entry (make test / make test-release)
 ├── SKILL.md                          # Main instruction (search philosophy + platform matrix + capabilities)
 ├── README.md                         # Chinese README
 ├── README.en.md                      # English README (this file)
 ├── scripts/
 │   ├── cdp-proxy.mjs                 # CDP Proxy HTTP server (connects to user's Chrome)
 │   ├── check-deps.sh                 # Environment check + auto-start Proxy
-│   └── self-test.sh                  # Local regression test (requires Chrome remote debugging)
+│   ├── self-test.sh                  # Base local regression test (requires Chrome remote debugging)
+│   └── release-test.sh               # Pre-release regression test (concurrency / invalid target / binary response)
 └── references/
     ├── api-cookbook.md               # 7-platform API call reference (curl examples + field mappings)
     ├── metadata-schema.md            # Cross-platform unified metadata schema + dedup rules + BibTeX templates

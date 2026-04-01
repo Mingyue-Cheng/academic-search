@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Search"
+  short_description: "Search papers and extract metadata"
+  default_prompt: "Use $academic-search to search papers, compare sources, and extract structured metadata."

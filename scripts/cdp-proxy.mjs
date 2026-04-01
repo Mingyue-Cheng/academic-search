@@ -233,10 +233,15 @@ function sendCDP(method, params = {}, sessionId = null) {
 function sendCDPChecked(method, params = {}, sessionId = null) {
   return sendCDP(method, params, sessionId).then((resp) => {
     if (resp?.error) {
-      const err = new Error(resp.error.message || `CDP error: ${method}`);
+      const detail = [resp.error.message, resp.error.data].filter(Boolean).join(' - ');
+      const err = new Error(detail || `CDP error: ${method}`);
       err.code = resp.error.code;
       err.data = resp.error.data;
-      err.statusCode = resp.error.code === -32602 ? 400 : 502;
+      if (/No target with given id found|No session with given id|Target closed|Session closed/i.test(detail)) {
+        err.statusCode = 404;
+      } else {
+        err.statusCode = resp.error.code === -32602 ? 400 : 502;
+      }
       throw err;
     }
     return resp;

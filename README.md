@@ -81,11 +81,19 @@ cd academic-search
 make test
 ```
 
+发布前回归测试：
+
+```bash
+cd academic-search
+make test-release
+```
+
 如果 `3456` 或默认测试端口 `4568` 已被占用，可显式覆盖：
 
 ```bash
 cd academic-search
 make test CDP_PROXY_PORT=4570
+make test-release CDP_PROXY_PORT=4570
 ```
 
 ---
@@ -139,12 +147,12 @@ Proxy 通过 WebSocket 直连 Chrome（兼容 `chrome://inspect` 方式，无需
 bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 
 # 页面操作
-curl -s "http://localhost:3456/new?url=https://scholar.google.com"           # 新建 tab
-curl -s -X POST "http://localhost:3456/eval?target=ID" -d 'document.title'  # 执行 JS
-curl -s -X POST "http://localhost:3456/click?target=ID" -d 'button.submit'  # 点击元素
-curl -s "http://localhost:3456/screenshot?target=ID&file=/tmp/shot.png"      # 截图
-curl -s "http://localhost:3456/scroll?target=ID&direction=bottom"            # 滚动
-curl -s "http://localhost:3456/close?target=ID"                              # 关闭 tab
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/new?url=https://scholar.google.com"           # 新建 tab
+curl -s -X POST "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/eval?target=ID" -d 'document.title'  # 执行 JS
+curl -s -X POST "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/click?target=ID" -d 'button.submit'  # 点击元素
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/screenshot?target=ID&file=/tmp/shot.png"      # 截图
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/scroll?target=ID&direction=bottom"            # 滚动
+curl -s "http://127.0.0.1:${CDP_PROXY_PORT:-3456}/close?target=ID"                              # 关闭 tab
 ```
 
 详见 `references/cdp-api.md`。
@@ -155,13 +163,14 @@ curl -s "http://localhost:3456/close?target=ID"                              # �
 
 ```
 academic-search/
-├── Makefile                         # 标准测试入口（make test）
+├── Makefile                          # 标准测试入口（make test / make test-release）
 ├── SKILL.md                          # 主指令（搜索哲学 + 平台矩阵 + 核心能力）
 ├── README.md
 ├── scripts/
 │   ├── cdp-proxy.mjs                 # CDP Proxy HTTP 服务（直连用户 Chrome）
 │   ├── check-deps.sh                 # 环境检查 + 自动启动 Proxy
-│   └── self-test.sh                  # 本地回归测试（需 Chrome remote debugging）
+│   ├── self-test.sh                  # 基础本地回归测试（需 Chrome remote debugging）
+│   └── release-test.sh               # 发布前回归测试（并发/失效 target/二进制响应）
 └── references/
     ├── api-cookbook.md               # 7 平台 API 调用速查（curl 示例 + 字段映射）
     ├── metadata-schema.md            # 跨平台统一元数据结构 + 去重规则 + BibTeX 模板
