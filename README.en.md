@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="academic-search logo" width="320" />
+</p>
+
 # academic-search
 
 A Claude Code skill that gives your agent complete academic literature search capabilities.

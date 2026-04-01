@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.png" alt="academic-search logo" width="320" />
+</p>
+
 # academic-search
 
 🌐 [English](README.en.md) | 简体中文
