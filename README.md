@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="assets/logo.png" alt="academic-search logo" width="320" />
+  <img src="assets/logo.png" alt="academic-search logo" width="120" />
 </p>
 
-<h1 align="center">academic-search skill</h1>
+<h1 align="center">Academic-Search Skill</h1>
 
 <p align="center">面向 Claude Code 的学术搜索与论文元数据提取 Skill</p>
 
