@@ -2,15 +2,78 @@
   <img src="assets/logo.png" alt="academic-search logo" width="320" />
 </p>
 
-# academic-search
+<h1 align="center">academic-search skill</h1>
 
-A Claude Code skill that gives your agent complete academic literature search capabilities.
+<p align="center">Academic search and paper metadata extraction for Claude Code</p>
 
-Claude Code ships with WebSearch and WebFetch, but lacks academic-specific retrieval strategies, cross-platform metadata normalization, and browser automation for paywalled platforms. This skill fills the gap: **search strategy + structured metadata extraction + CDP browser automation + accumulated site knowledge**.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-v1.1.0-0f766e" alt="version" />
+  <img src="https://img.shields.io/badge/license-MIT-1f2937" alt="license" />
+  <img src="https://img.shields.io/badge/test-make%20test%20%7C%20make%20test--release-2563eb" alt="test" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/Mingyue-Cheng/academic-search/stargazers">
+    <img src="https://img.shields.io/github/stars/Mingyue-Cheng/academic-search?style=social" alt="GitHub stars" />
+  </a>
+  <a href="https://github.com/Mingyue-Cheng/academic-search/commits/main">
+    <img src="https://img.shields.io/github/last-commit/Mingyue-Cheng/academic-search" alt="last commit" />
+  </a>
+  <a href="https://github.com/Mingyue-Cheng/academic-search">
+    <img src="https://img.shields.io/badge/repo-GitHub-111827?logo=github" alt="repo link" />
+  </a>
+</p>
+
+<p align="center"><a href="README.md">简体中文</a> | English</p>
+
+academic-search skill brings academic-oriented retrieval strategy, cross-platform metadata normalization, and browser automation support to Claude Code. It is designed for paper discovery, author analysis, citation lookup, open-access PDF retrieval, BibTeX export, and structured literature comparison across multiple sources.
+
+Compared with generic WebSearch and WebFetch, this skill focuses on three things: **platform selection for academic tasks**, **structured outputs**, and **reusable site-specific operational knowledge**.
+
+## Quick Start
+
+```bash
+git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/academic-search
+bash ~/.claude/skills/academic-search/scripts/check-deps.sh
+```
+
+Once installed, you can immediately ask Claude Code to perform an academic search task, for example:
+
+```text
+Search for top-venue papers on graph neural networks published after 2023, give me the top 10
+```
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Core Features](#core-features)
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Testing](#testing)
+- [Usage Examples](#usage-examples)
+- [Platforms and Access Strategy](#platforms-and-access-strategy)
+- [CDP Proxy API](#cdp-proxy-api)
+- [Project Structure](#project-structure)
+- [Design Principles](#design-principles)
+- [License](#license)
+
+## Overview
+
+- **Platform coverage**: arXiv, Semantic Scholar, Google Scholar, ACM DL, IEEE Xplore, PubMed, and Papers with Code
+- **Operating principles**: API-first, structured-output-first, CDP only when necessary
+- **Typical tasks**: keyword search, author page parsing, citation analysis, PDF/BibTeX retrieval, and batch literature review
+- **Target users**: developers and researchers using Claude Code for academic search and research assistance
+
+## Why academic-search
+
+- **Built for academic workflows, not generic browsing**: prioritizes paper metadata, citations, PDFs, and BibTeX over raw webpage content
+- **Unified results across multiple sources**: reduces manual reconciliation by deduplicating and merging cross-platform outputs
+- **Controlled browser automation**: uses CDP only for platforms such as Google Scholar where no reliable API exists
+- **Suitable for research pipelines**: works for both single-paper lookups and larger literature review or benchmarking workflows
 
 ---
 
-## v1.1.0 Capabilities
+## Core Features
 
 | Capability | Description |
 |-----------|-------------|
@@ -59,9 +122,7 @@ git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/acad
 ln -sfn "$(pwd)" ~/.claude/skills/academic-search
 ```
 
----
-
-## Prerequisites (CDP mode — only needed for Google Scholar)
+## Requirements
 
 arXiv, Semantic Scholar, PubMed, and other API-based platforms work out of the box with no setup.
 
@@ -75,6 +136,8 @@ Environment check (the agent runs this automatically — no need to run manually
 ```bash
 bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 ```
+
+## Testing
 
 Local regression test:
 
@@ -100,7 +163,7 @@ make test-release CDP_PROXY_PORT=4570
 
 ---
 
-## Usage
+## Usage Examples
 
 After installation, just ask Claude Code to perform academic search tasks — the skill takes over automatically:
 
@@ -126,7 +189,7 @@ Check Google Scholar for the citation count of "Attention Is All You Need"
 
 ---
 
-## Platform Access Strategy
+## Platforms and Access Strategy
 
 | Platform | Access Method | Requires Chrome Debugging |
 |----------|--------------|:------------------------:|
@@ -191,7 +254,7 @@ academic-search/
 
 ---
 
-## Design Philosophy
+## Design Principles
 
 > Skill = philosophy + technical facts, not an operations manual. Explain the tradeoffs and let the AI decide — don't do its reasoning for it.
 
