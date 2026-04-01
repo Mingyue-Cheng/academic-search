@@ -5,7 +5,7 @@ description:
   下载 PDF、导出 BibTeX、调研某领域最新进展、对比多篇论文、批量收集文献。
   覆盖平台：arXiv、Semantic Scholar、Google Scholar、ACM DL、IEEE Xplore、PubMed、Papers with Code。
 metadata:
-  version: "1.0.0"
+  version: "1.2.0"
 ---
 
 # academic-search Skill
@@ -23,6 +23,8 @@ bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 - **curl**：必需，用于 API 调用。
 
 arXiv、Semantic Scholar、PubMed、Papers with Code 等 API 平台无需 Chrome 远程调试即可使用。
+
+**S2 API Key（强烈建议）**：无 Key 时 S2 速率上限极低，单 session 多次调用必触发 429。免费注册即可获得更高配额：https://www.semanticscholar.org/product/api#api-key-form。有 Key 时在请求头加 `x-api-key: {your_key}`。
 
 ## 搜索哲学
 
@@ -88,9 +90,16 @@ arXiv、Semantic Scholar、PubMed、Papers with Code 等 API 平台无需 Chrome
 ### 关键词搜索
 
 1. 根据领域选平台：CS/ML → arXiv + Semantic Scholar；生医 → PubMed；跨领域 → Semantic Scholar
-2. 构造查询：arXiv 用 `search_query` 字段前缀语法；S2 用 `query` 参数；PubMed 用 `term` 布尔表达式
-3. **第一遍输出轻量摘要表**（必含：标题、年份、venue、引用数、是否有开放 PDF），**不默认拉完整摘要**
-4. 用户确认核心论文后，第二遍拉完整元数据
+2. **扩展 query**：用户自然语言输入往往只是一个切入点，需要主动展开为 2-3 个互补 query 覆盖不同命名习惯：
+   - 同义词替换：`agent` → `agentic` / `multi-agent` / `autonomous`
+   - 子概念拆分：`time series agent` → `time series LLM agent` + `time series agentic reasoning` + `time series automated analysis`
+   - 缩写与全称并用：`TS` / `time series`，`LLM` / `large language model`
+   - 不同 query 结果合并去重，覆盖率比单 query 提升 30-50%
+3. 构造查询：arXiv 用 `search_query` 字段前缀语法；S2 用 `query` 参数；PubMed 用 `term` 布尔表达式
+4. **计划多次 S2 调用时优先用 batch API**（`/paper/batch`）而非多次 search，节省速率配额
+5. **第一遍输出轻量摘要表**（必含：标题、年份、venue、引用数、是否有开放 PDF），**不默认拉完整摘要**
+6. **意图判断**：用户明确说"只要前 N 篇"或"摘要表即可"时，直接输出第一遍结果，无需等待确认再停下
+7. 用户需要第二遍时，再深拉完整元数据
 
 多平台并行查询时，用子 Agent 分治（见"并行分治策略"一节）。
 
@@ -112,8 +121,10 @@ Venue 等级标注规则：CS 会议参考 `references/venue-rankings.md`（CCF 
 | 引用数阈值 | S2 `citationCount` | 经典论文通常引用数高；新兴方向可适当放低阈值 |
 | 发表年份 | 所有平台 | 综述类需要覆盖历史；最新进展限定近 2-3 年 |
 | Venue 等级 | S2 `venue` + `references/venue-rankings.md` | CS 会议参考 CCF 分级；优先 CCF-A/B |
-| 开放 PDF | S2 `openAccessPdf` / arXiv ID 存在 | 无法获取 PDF 的论文标注，由用户决定是否需要 |
-| 代码可用性 | Papers with Code | ML 领域复现/对比实验必须检查 |
+| 开放 PDF | S2 `externalIds.ArXiv` 存在即可得 | **只要有 ArXiv ID 就标 ✓**，不依赖 openAccessPdf（该字段经常为 null） |
+| 代码可用性 | Papers with Code API | ML 论文用 `paperswithcode.com/api/v1/papers/?arxiv_id={id}` 自动补全代码列 |
+
+**排序建议**：不要单纯按引用数排，应综合三个维度——CCF-A/B 顶会论文优先展示；同等级内按引用数降序；近 6 个月发表的论文（引用数天然偏低）单独标注 `[新]`，不因引用数低而降权。
 
 **筛选后的典型结论格式**：
 
@@ -143,8 +154,8 @@ curl -s "https://api.semanticscholar.org/graph/v1/paper/ARXIV:{arxiv_id}?fields=
 
 按以下优先级尝试：
 
-1. **arXiv PDF 直链**：如果有 arXiv ID，直接 `https://arxiv.org/pdf/{arxiv_id}`
-2. **Semantic Scholar openAccessPdf**：从 API 响应的 `openAccessPdf.url` 字段获取
+1. **arXiv PDF 直链**：`externalIds.ArXiv` 存在时，**直接构造** `https://arxiv.org/pdf/{arxiv_id}`，不检查 openAccessPdf（S2 该字段经常为 null，但 arXiv PDF 实际可得）
+2. **Semantic Scholar openAccessPdf**：从 API 响应的 `openAccessPdf.url` 字段获取（作为补充，非首选）
 3. **Unpaywall**：`https://api.unpaywall.org/v2/{doi}?email=your@email.com`，返回 Open Access PDF 链接
 4. **平台页面**：通过 WebFetch 或 CDP 访问论文页，提取 PDF 下载链接
 5. **用户决定**：如以上均无法获取免费 PDF，告知用户需要机构访问权限
