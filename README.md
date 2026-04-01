@@ -1,18 +1,20 @@
-<p align="center">
-  <img src="assets/logo.png" alt="academic-search" width="120" />
-</p>
-
-<h1 align="center">Academic-Search Skill</h1>
-
-<p align="center">面向 Claude Code 的学术搜索与论文元数据提取 Skill</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/version-v1.1.0-0f766e" />
-  <img src="https://img.shields.io/badge/license-MIT-1f2937" />
-  <img src="https://img.shields.io/github/stars/Mingyue-Cheng/academic-search?style=social" />
-</p>
-
-<p align="center">🌐 <a href="README.en.md">English</a> | 简体中文</p>
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="140" valign="middle">
+      <img src="assets/logo.png" alt="academic-search" width="120" />
+    </td>
+    <td valign="middle">
+      <h1>Academic-Search Skill</h1>
+      <p>面向 Claude Code 的学术搜索与论文元数据提取 Skill</p>
+      <p>
+        <img src="https://img.shields.io/badge/version-v1.1.0-0f766e" />
+        <img src="https://img.shields.io/badge/license-MIT-1f2937" />
+        <img src="https://img.shields.io/github/stars/Mingyue-Cheng/academic-search?style=social" />
+      </p>
+      <p>🌐 <a href="README.en.md">English</a> | 简体中文</p>
+    </td>
+  </tr>
+</table>
 
 ---
 
