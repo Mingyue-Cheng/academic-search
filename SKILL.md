@@ -1,9 +1,37 @@
 ---
 name: academic-search
-description:
-  学术论文搜索与元数据提取。触发场景：搜索论文、查找作者发表列表、获取论文引用关系、
-  下载 PDF、导出 BibTeX、调研某领域最新进展、对比多篇论文、批量收集文献。
-  覆盖平台：arXiv、Semantic Scholar、Google Scholar、ACM DL、IEEE Xplore、PubMed、Papers with Code。
+description: |
+  学术论文搜索、引用分析与元数据提取专用 Skill。
+
+  【自动触发条件——出现以下任一信号时立即加载本 Skill，无需用户显式说明】
+
+  意图信号（中文）：
+  - 搜论文 / 找论文 / 查论文 / 调研论文 / 检索文献 / 文献综述 / 综述
+  - 顶会 / 顶刊 / CCF / NeurIPS / ICML / ICLR / ACL / EMNLP / CVPR / KDD / SIGIR / WWW
+  - 引用数 / 被引 / 引用关系 / 引用量
+  - BibTeX / 参考文献格式 / 导出引用
+  - 作者发表列表 / 某人的论文 / 某人在哪发了什么
+  - arXiv / Semantic Scholar / Google Scholar / PubMed / ACM DL / IEEE
+  - PDF 链接 / 论文 PDF / 开放获取
+  - 摘要 abstract / 元数据
+
+  意图信号（英文）：
+  - search paper / find paper / look up paper / literature review / survey
+  - citation count / citation graph / citing / cited by
+  - BibTeX / reference export
+  - top conference / top journal / venue ranking
+  - author publication list / papers by X
+
+  URL 信号（出现以下域名的链接时自动触发）：
+  - arxiv.org / ar5iv.org
+  - semanticscholar.org
+  - scholar.google.com
+  - dl.acm.org
+  - ieeexplore.ieee.org
+  - pubmed.ncbi.nlm.nih.gov
+  - paperswithcode.com
+
+  覆盖平台：arXiv、Semantic Scholar、Google Scholar、ACM DL、IEEE Xplore、PubMed、Papers with Code
 metadata:
   version: "1.2.0"
 ---
