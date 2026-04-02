@@ -8,7 +8,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/version-v1.2.0-0f766e" />
   <img src="https://img.shields.io/badge/license-MIT-1f2937" />
-  <img src="https://img.shields.io/github/stars/Mingyue-Cheng/academic-search?style=social" />
+  <img src="https://img.shields.io/github/stars/ustc-ai4science/academic-search?style=social" />
 </p>
 
 <p align="center">🌐 <a href="README.en.md">English</a> | 简体中文</p>
@@ -25,7 +25,7 @@
 ## Quick Start
 
 ```bash
-git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/academic-search
+git clone https://github.com/ustc-ai4science/academic-search ~/.claude/skills/academic-search
 bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 ```
 
@@ -85,10 +85,10 @@ bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 
 ```bash
 # 方式一：手动安装
-git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/academic-search
+git clone https://github.com/ustc-ai4science/academic-search ~/.claude/skills/academic-search
 
 # 方式二：让 Claude 安装
-# 帮我安装这个 skill：https://github.com/Mingyue-Cheng/academic-search
+# 帮我安装这个 skill：https://github.com/ustc-ai4science/academic-search
 
 # 方式三：本地开发软链接（在项目目录内执行）
 ln -sfn "$(pwd)" ~/.claude/skills/academic-search

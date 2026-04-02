@@ -18,13 +18,13 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Mingyue-Cheng/academic-search/stargazers">
-    <img src="https://img.shields.io/github/stars/Mingyue-Cheng/academic-search?style=social" alt="GitHub stars" />
+  <a href="https://github.com/ustc-ai4science/academic-search/stargazers">
+    <img src="https://img.shields.io/github/stars/ustc-ai4science/academic-search?style=social" alt="GitHub stars" />
   </a>
-  <a href="https://github.com/Mingyue-Cheng/academic-search/commits/main">
-    <img src="https://img.shields.io/github/last-commit/Mingyue-Cheng/academic-search" alt="last commit" />
+  <a href="https://github.com/ustc-ai4science/academic-search/commits/main">
+    <img src="https://img.shields.io/github/last-commit/ustc-ai4science/academic-search" alt="last commit" />
   </a>
-  <a href="https://github.com/Mingyue-Cheng/academic-search">
+  <a href="https://github.com/ustc-ai4science/academic-search">
     <img src="https://img.shields.io/badge/repo-GitHub-111827?logo=github" alt="repo link" />
   </a>
 </p>
@@ -38,7 +38,7 @@ Compared with generic WebSearch and WebFetch, this skill focuses on three things
 ## Quick Start
 
 ```bash
-git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/academic-search
+git clone https://github.com/ustc-ai4science/academic-search ~/.claude/skills/academic-search
 bash ~/.claude/skills/academic-search/scripts/check-deps.sh
 ```
 
@@ -128,13 +128,13 @@ Search for top-venue papers on graph neural networks published after 2023, give 
 **Option 1: Let Claude install it automatically**
 
 ```
-Install this skill for me: https://github.com/Mingyue-Cheng/academic-search
+Install this skill for me: https://github.com/ustc-ai4science/academic-search
 ```
 
 **Option 2: Manual**
 
 ```bash
-git clone https://github.com/Mingyue-Cheng/academic-search ~/.claude/skills/academic-search
+git clone https://github.com/ustc-ai4science/academic-search ~/.claude/skills/academic-search
 ```
 
 **Option 3: Local symlink (for development)**
