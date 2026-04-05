@@ -48,9 +48,16 @@ Once installed, you can immediately ask Claude Code to perform an academic searc
 Search for top-venue papers on graph neural networks published after 2023, give me the top 10
 ```
 
+## News
+
+- `2026-04-02` Released `v1.2.0`: frontier-first ranking, query expansion, direct PDF retrieval, and intent-aware two-pass search
+- `2026-04-02` Added a new case study: [Skill vs. No-Skill Search Comparison](docs/skill-usage-comparison.md)
+- `2026-04-02` Updated repository links to `ustc-ai4science/academic-search` and refreshed the README hero/content copy
+
 ## Table of Contents
 
 - [Overview](#overview)
+- [News](#news)
 - [Core Features](#core-features)
 - [Installation](#installation)
 - [Requirements](#requirements)
