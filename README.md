@@ -200,6 +200,4 @@ academic-search/
 
 ---
 
-## License
-
-MIT · 作者：Mingyue Cheng
+## License MIT
